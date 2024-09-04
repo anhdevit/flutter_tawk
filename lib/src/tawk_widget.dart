@@ -46,19 +46,25 @@ class _TawkState extends State<Tawk> {
 
     if (Platform.isIOS) {
       javascriptString = '''
-        Tawk_API = Tawk_API || {};
-        Tawk_API.setAttributes($json);
-      ''';
+      Tawk_API = Tawk_API || {};
+      Tawk_API.setAttributes($json);
+    ''';
+
+      // Delay execution by 1 second on iOS
+      Future.delayed(Duration(milliseconds: 500), () {
+        _controller.runJavascript(javascriptString);
+      });
     } else {
       javascriptString = '''
-        Tawk_API = Tawk_API || {};
-        Tawk_API.onLoad = function() {
-          Tawk_API.setAttributes($json);
-        };
-      ''';
-    }
+      Tawk_API = Tawk_API || {};
+      Tawk_API.onLoad = function() {
+        Tawk_API.setAttributes($json);
+      };
+    ''';
 
-    _controller.runJavascript(javascriptString);
+      // Immediate execution on non-iOS platforms
+      _controller.runJavascript(javascriptString);
+    }
   }
 
   @override
